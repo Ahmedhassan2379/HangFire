@@ -5,6 +5,6 @@ namespace HangFire.ExportFile.Interface
 {
     public interface IExportFile
     {
-        IActionResult ExportReportMovie(DataTable dataTable);
+        byte[] ExportReportMovie(DataTable dataTable);
     }
 }

@@ -35,19 +35,18 @@ namespace HangFire.Controllers
         [HttpPost("send")]
         public async Task<IActionResult> SendMail([FromForm]MailRequestDto maildto)
         {
-            List<Movie> result = _context.Movies.Where(x => x.Year == 2023).Include(x => x.Category).ToList();
+            List<Movie> result = _context.Movies.Where(x=>x.Year==2023).Include(x => x.Category).ToList();
             if (result.Count() > 0)
             {
 
-                maildto.Body=String.Join(",", result);
-                //DataTable dt = ToDataTable(result);
-                //maildto.Attachments= _exportFile.ExportReportMovie(dt);
+                DataTable dt = ToDataTable(result);
+                maildto.Attachments= _exportFile.ExportReportMovie(dt);
                
 
             }
 
-            await _sendmail.SendMailAsync(maildto.ToEmail, maildto.Subject, maildto.Body, maildto.Attachments);
-            return Ok();
+            await _sendmail.SendEmailWithAttachment(maildto.ToEmail,maildto.Subject,maildto.Body,maildto.Attachments,maildto.attachmentFileName);
+            return Ok("Email sent successfully.");
         }
 
         public DataTable ToDataTable<T>(List<T> items)

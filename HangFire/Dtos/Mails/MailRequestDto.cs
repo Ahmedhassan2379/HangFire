@@ -11,6 +11,7 @@ namespace HangFire.Dtos.Mails
         public string Subject { get; set; }
         [Required]
         public string Body { get; set; }
-        public IList<IFormFile>? Attachments { get; set; }
+        public string? attachmentFileName { get; set; } = "Movie.xlsx";
+        public byte[]? Attachments { get; set; }
     }
 }

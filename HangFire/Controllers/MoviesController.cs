@@ -66,8 +66,13 @@ namespace HangFire.Controllers
             };
             await _context.AddAsync(movie);
             _context.SaveChanges();
-
-            BackgroundJob.Enqueue(() => _setting.SendMailAsync("mhelal909@gmail.com" ,"Ahmed Hassan", "ahmed", null ));
+            MailRequestDto dto = new MailRequestDto()
+            {
+                Body="ssss",
+                Subject="bbbb",
+                ToEmail="ahmedhassan2379@gmail.com"
+            };
+            //BackgroundJob.Enqueue(() => _setting.SendMailAsync(dto));
             return Ok(movie);
         }
 
@@ -77,7 +82,10 @@ namespace HangFire.Controllers
         {
             List<Movie> result = _context.Movies.Where(x => x.Year == 2023).Include(x => x.Category).ToList();
             DataTable dt = _dataTable.ToDataTable(result);
-            return _exportFile.ExportReportMovie(dt);
+           var File = _exportFile.ExportReportMovie(dt);
+            FileContentResult r = new FileContentResult(fileContents: File, contentType: "application/vnd.openxmlformats-officedocument-spreadsheetml.sheet") { FileDownloadName = "Movies.xlsx" };
+
+            return Ok("Export File Done");
         }
     }
 }

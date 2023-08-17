@@ -17,7 +17,7 @@ namespace HangFire.ExportFile.Service
 {
     public class ExportFile : IExportFile
     {
-        public IActionResult ExportReportMovie(DataTable dataTable)
+        public byte[] ExportReportMovie(DataTable dataTable)
         {
 
 
@@ -64,9 +64,9 @@ namespace HangFire.ExportFile.Service
                     workbook.SaveAs(stream);
                     var content = stream.ToArray();
 
-                     FileContentResult r = new FileContentResult(fileContents: content, contentType: "application/vnd.openxmlformats-officedocument-spreadsheetml.sheet") { FileDownloadName = "Movies.xlsx" };
+                     //FileContentResult r = new FileContentResult(fileContents: content, contentType: "application/vnd.openxmlformats-officedocument-spreadsheetml.sheet") { FileDownloadName = "Movies.xlsx" };
                     //return File(content, "application/vnd.openxmlformats-officedocument-spreadsheetml.sheet", "Movies.xlsx");
-                    return r;
+                    return content;
                 }
             }
 
