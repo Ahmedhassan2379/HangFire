@@ -38,28 +38,31 @@ namespace HangFire.Controllers
         [HttpGet]
         public async Task<IActionResult> GetMovie()
         {
-            List<Movie> movies = await _context.Movies.Include(x => x.Category).ToListAsync();
+           var movies = await _context.Movies.Include(x => x.Category).Select(m=>new MovieModelDto
+            {
+                CategoryId = m.CategoryId,
+                CategoryName=m.Category.Name,
+               Id = m.Id,
+               Poster=m.Poster,
+               Rate=m.Rate,
+               StoreLine=m.StoreLine,
+               Tiltle=m.Tiltle,
+               Year = m.Year
+            }).ToListAsync();
             return Ok(movies);
         }
         
         [HttpPost]
         public async Task<IActionResult> CreateMovie([FromForm]MovieModelDto movieDto)
         {
-            //if (allowedExtention.Contains(Path.GetExtension(movieDto.Poster.FileName).ToLower()))
-            //{
-            //    return BadRequest("the image must be (jpg or png)");
-            //}
-            //if(movieDto.Poster.Length > allowedsize)
-            //{
-            //    return BadRequest("the size of image must be less than 1m");
-            //}
-            var dataStream = new MemoryStream();
-            await movieDto.Poster.CopyToAsync(dataStream);
+          
+            //var dataStream = new MemoryStream();
+            //await movieDto.Poster.CopyToAsync();
             Movie movie = new Movie()
             {
                 CategoryId = movieDto.CategoryId,
                 Tiltle=movieDto.Tiltle,
-                Poster=dataStream.ToArray(),
+                Poster=movieDto.Poster,
                 Rate = movieDto.Rate,
                 Year = movieDto.Year,
                 StoreLine=movieDto.StoreLine
@@ -78,14 +81,23 @@ namespace HangFire.Controllers
 
 
         [HttpGet("Export")]
-        public IActionResult ExportMovie()
+        public FileContentResult ExportMovie()
         {
-            List<Movie> result = _context.Movies.Where(x => x.Year == 2023).Include(x => x.Category).ToList();
+           var result = _context.Movies.Include(x => x.Category).Select(m=>new MovieModelDto {
+                CategoryId = m.CategoryId,
+                CategoryName = m.Category.Name,
+                Id = m.Id,
+                Poster = m.Poster,
+                Rate = m.Rate,
+                StoreLine = m.StoreLine,
+                Tiltle = m.Tiltle,
+                Year = m.Year
+            }).Where(x => x.Year == 2023).ToList();
             DataTable dt = _dataTable.ToDataTable(result);
            var File = _exportFile.ExportReportMovie(dt);
             FileContentResult r = new FileContentResult(fileContents: File, contentType: "application/vnd.openxmlformats-officedocument-spreadsheetml.sheet") { FileDownloadName = "Movies.xlsx" };
 
-            return Ok("Export File Done");
+            return r;
         }
     }
 }
