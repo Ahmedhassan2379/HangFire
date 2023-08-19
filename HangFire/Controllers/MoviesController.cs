@@ -36,9 +36,9 @@ namespace HangFire.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetMovie()
+        public dynamic GetMovie()
         {
-           var movies = await _context.Movies.Include(x => x.Category).Select(m=>new MovieModelDto
+           var movies =  _context.Movies.Include(x => x.Category).Select(m=>new MovieModelDto
             {
                 CategoryId = m.CategoryId,
                 CategoryName=m.Category.Name,
@@ -48,8 +48,8 @@ namespace HangFire.Controllers
                StoreLine=m.StoreLine,
                Tiltle=m.Tiltle,
                Year = m.Year
-            }).ToListAsync();
-            return Ok(movies);
+            }).ToList();
+            return movies.ToArray();
         }
         
         [HttpPost]
