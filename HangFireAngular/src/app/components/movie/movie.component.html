@@ -1,0 +1,47 @@
+<div class="jumbotron py-3">
+  <h1 class="display-4 text-center"style="text-decoration: underline;font-weight: bold;">Movies List</h1>
+</div>
+
+<div class="row" >
+  <!-- <div class="col-md-6">
+      <app-payment-detail-form></app-payment-detail-form>
+  </div> -->
+
+    <div class="col-md-4" style="margin-top: 23px;" *ngFor="let item of finalResult">
+    <div class="card">
+      <img style="width: 200px;height: 200px;" src="{{url}}" class="card-img-top" alt="...">
+      <div class="card-body">
+        <h5 class="card-title">{{item.tiltle}}</h5>
+        <p class="card-text">{{item.categoryName}}</p>
+        <p class="card-text"><small class="text-muted">{{item.rate}}</small></p>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+
+  <!-- <div class="tablediv">
+      <table class="table table-success table-hover">
+          <thead class="thead-light">
+              <tr>
+                  <th>Title</th>
+                  <th>Category</th>
+                  <th>Year</th>
+                  <th>Rate</th>
+              </tr>
+          </thead>
+          <tbody>
+              <tr *ngFor="let item of finalResult">
+                  <td >{{item.tiltle}}</td>
+                  <td >{{item.categoryName}}</td>
+                  <td >{{item.year}}</td>
+                  <td >{{item.rate}}</td>
+
+              </tr>
+          </tbody>
+      </table>
+  </div> -->
+</div>
