@@ -9,13 +9,13 @@
 
               <h2 class="fw-bold mb-2 text-uppercase">Login</h2>
               <p class="text-white-50 mb-5">Please enter your login and password!</p>
-            <form formGroup="loginForm">
-              <div class="form-outline form-white mb-4">
-                <input type="email" id="typeEmailX"  formControlName="username" placeholder="Email" class="form-control form-control-lg" />
+            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+              <div class="form-outline form-white mb-4" [class.error]="loginForm.controls['username'].dirty && loginForm.hasError('required','username')">
+                <input type="email" id="typeEmailX"  formControlName="username" placeholder="UserName" class="form-control form-control-lg" />
                 <span class="fa fa-lock p-2"></span>
               </div>
-              <small  *ngIf="loginForm.controls['username'].dirty && loginForm.hasError('required','username')" class="text-danger">The UserName Is Required</small>
-              <div class="form-outline form-white mb-4">
+              <small style="color: white;" *ngIf="loginForm.controls['username'].dirty && loginForm.hasError('required','username')" class="text-danger">The UserName Is Required</small>
+              <div class="form-outline form-white mb-4" [class.error]="loginForm.controls['password'].dirty && loginForm.hasError('required','password')">
                 <input [type]="type" formControlName="password" id="typePasswordX" placeholder="Password" class="form-control form-control-lg" />
                 <span (click)="showHiddenPassword()" class="fa {{eyeIcon}}"> </span>
               </div>
@@ -44,3 +44,6 @@
     </div>
   </div>
 </section>
+
+
+

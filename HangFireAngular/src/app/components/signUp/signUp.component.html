@@ -9,30 +9,39 @@
 
               <h2 class="fw-bold mb-2 text-uppercase">SignUp</h2>
               <p class="text-white-50 mb-5">Please enter your Name and Email!</p>
-              <div class="form-outline form-white mb-4">
-                <input type="email" id="typeEmailX" placeholder="First Name" class="form-control form-control-lg" />
+              <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+              <div class="form-outline form-white mb-4" [class.error]="signupForm.controls['firstname'].dirty && signupForm.hasError('required','firstname')">
+                <input type="email" formControlName="firstname" id="typeEmailX" placeholder="First Name" class="form-control form-control-lg" />
                 <span class="fa fa-lock p-2"></span>
               </div>
-              <div class="form-outline form-white mb-4">
-                <input type="email" id="typeEmailX" placeholder="Last Name" class="form-control form-control-lg" />
-                <span class="fa fa-lock p-2"></span>
-              </div>
-              <div class="form-outline form-white mb-4">
-                <input type="email" id="typeEmailX" placeholder="User Name" class="form-control form-control-lg" />
-                <span class="fa fa-lock p-2"></span>
-              </div>
-              <div class="form-outline form-white mb-4">
-                <input type="email" id="typeEmailX" placeholder="Email" class="form-control form-control-lg" />
-                <span class="fa fa-lock p-2"></span>
-              </div>
+              <small *ngIf="signupForm.controls['firstname'].dirty && signupForm.hasError('required','firstname')" class="text-danger">The First Name Is Required</small>
 
-              <div class="form-outline form-white mb-4">
-                <input [type]="type" id="typePasswordX" placeholder="Password" class="form-control form-control-lg" />
-                
+              <div class="form-outline form-white mb-4" [class.error]="signupForm.controls['lastname'].dirty && signupForm.hasError('required','lastname')">
+                <input type="email" formControlName="lastname" id="typeEmailX" placeholder="Last Name" class="form-control form-control-lg" />
+                <span class="fa fa-lock p-2"></span>
+              </div>
+              <small *ngIf="signupForm.controls['lastname'].dirty && signupForm.hasError('required','lastname')" class="text-danger">The Last Name Is Required</small>
+
+              <div class="form-outline form-white mb-4" [class.error]="signupForm.controls['username'].dirty && signupForm.hasError('required','username')">
+                <input type="email" id="typeEmailX" formControlName="username" placeholder="User Name" class="form-control form-control-lg" />
+                <span class="fa fa-lock p-2"></span>
+              </div>
+              <small *ngIf="signupForm.controls['username'].dirty && signupForm.hasError('required','username')" class="text-danger">The User Name Is Required</small>
+
+              <div class="form-outline form-white mb-4" [class.error]="signupForm.controls['email'].dirty && signupForm.hasError('required','email')">
+                <input type="email" id="typeEmailX" formControlName="email" placeholder="Email" class="form-control form-control-lg" />
+                <span class="fa fa-lock p-2"></span>
+              </div>
+              <small *ngIf="signupForm.controls['email'].dirty && signupForm.hasError('required','email')" class="text-danger">The Email Is Required</small>
+
+              <div class="form-outline form-white mb-4" [class.error]="signupForm.controls['password'].dirty && signupForm.hasError('required','password')">
+                <input [type]="type" id="typePasswordX" formControlName="password" placeholder="Password" class="form-control form-control-lg" />
                 <span (click)="showHiddenPassword()" class="fa {{eyeIcon}}"> </span>
               </div>
+              <small *ngIf="signupForm.controls['password'].dirty && signupForm.hasError('required','password')" class="text-danger">The Password Is Required</small>
 
-              <button class="btn btn-outline-light btn-lg px-5" type="submit">Sign Up</button>
+              <button [disabled]="signupForm.invalid" class="btn btn-outline-light btn-lg px-5" type="submit">Sign Up</button>
+            </form>
             </div>
             <div>
               <p class="mb-0">I have an account? <a href="/login" class="text-white-50 fw-bold">Log In</a>
