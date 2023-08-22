@@ -40,9 +40,11 @@ export class LogInComponent implements OnInit {
     debugger;
     if (this.loginForm.valid) {
       //send object to database
-      this.auth.LogIn(this.loginForm.value).subscribe({
+      this.auth.signIn(this.loginForm.value).subscribe({
         next: (res) => {
           this.loginForm.reset();
+          console.log(res);
+          this.auth.storeToken(res.token);
           this.toast.success({detail:"SUCCESS",summary:res.message,duration:5000});
           this.router.navigate(['movie'])
         },

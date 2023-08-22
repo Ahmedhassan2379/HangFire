@@ -1,0 +1,28 @@
+<div class="jumbotron py-3">
+  <h1 class="display-4 text-center"style="text-decoration: underline;font-weight: bold;">Users List</h1>
+</div>
+<div><button (click)="logout()" class="btn btn-danger">Sign Out</button></div>
+
+<table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">FirstName</th>
+      <th scope="col">LastName</th>
+      <th scope="col">UserName</th>
+      <th scope="col">Email</th>
+      <th scope="col">Role</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let user of allUsers">
+      <th scope="row">{{user.id}}</th>
+      <td>{{user.firstName}}</td>
+      <td>{{user.lastName}}</td>
+      <td>{{user.userName}}</td>
+      <td>{{user.email}}</td>
+      <td>{{user.role}}</td>
+    </tr>
+   
+  </tbody>
+</table>

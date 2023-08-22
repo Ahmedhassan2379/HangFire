@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { MovieComponent } from './components/movie/movie.component';
@@ -10,13 +10,16 @@ import { LogInComponent } from './components/logIn/logIn.component';
 import { SignUpComponent } from './components/signUp/signUp.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NgToastModule } from 'ng-angular-popup';
+import { TokenInterceptor } from './interceptors/token.interceptor';
+import { UserDashbnoardComponent } from './components/userDashbnoard/userDashbnoard.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     MovieComponent,
     LogInComponent,
-    SignUpComponent
+    SignUpComponent,
+    UserDashbnoardComponent
   ],
   imports: [
     BrowserModule,
@@ -27,7 +30,11 @@ import { NgToastModule } from 'ng-angular-popup';
     ReactiveFormsModule,
     NgToastModule
   ],
-  providers: [],
+  providers:  [{
+    provide:HTTP_INTERCEPTORS,
+    useClass:TokenInterceptor,
+    multi:true
+  }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
