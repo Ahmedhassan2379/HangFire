@@ -11,4 +11,9 @@ url="https://localhost:7109/api/Movies"
 GetAllMovies() {
   return this.http.get<any[]>(this.url);
 }
+
+getMoviesByCategory(){
+  return this.http.get<any[]>(this.url);
+}
+
 }

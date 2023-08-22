@@ -12,11 +12,13 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { NgToastModule } from 'ng-angular-popup';
 import { TokenInterceptor } from './interceptors/token.interceptor';
 import { UserDashbnoardComponent } from './components/userDashbnoard/userDashbnoard.component';
+import { CategoryComponent } from './components/category/category.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     MovieComponent,
+    CategoryComponent,
     LogInComponent,
     SignUpComponent,
     UserDashbnoardComponent

@@ -1,5 +1,5 @@
 <div class="jumbotron py-3">
-  <h1 class="display-4 text-center"style="text-decoration: underline;font-weight: bold;">Movies List</h1>
+  <h1 class="display-4 text-center"style="text-decoration: underline;font-weight: bold;">Categories List</h1>
 </div>
 <div><button (click)="logout()" class="btn btn-danger">Sign Out</button></div>
 <div><a href="/users">ALL Users</a></div>
@@ -10,11 +10,8 @@
 
     <div class="col-md-4" style="margin-top: 23px;" *ngFor="let item of finalResult">
     <div class="card">
-      <img style="width: 200px;height: 200px;" src="{{url}}" class="card-img-top" alt="...">
       <div class="card-body">
-        <h5 class="card-title">{{item.tiltle}}</h5>
-        <p class="card-text">{{item.categoryName}}</p>
-        <p class="card-text"><small class="text-muted">{{item.rate}}</small></p>
+        <button (click)="getMoviesByCategory($event)"><h5 class="card-title" id="{{item.id}}">{{item.name}}</h5></button>
       </div>
     </div>
   </div>

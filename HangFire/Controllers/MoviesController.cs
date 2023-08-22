@@ -12,6 +12,7 @@ using HangFire.Settings;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Data;
 using System.Reflection;
 
@@ -51,7 +52,13 @@ namespace HangFire.Controllers
             }).ToList();
             return movies.ToArray();
         }
-        
+
+        [HttpPost("movieByCategory")]
+        public dynamic getMoviesByCategory(int categoryId)
+        {
+            var movies = _context.Movies.Select(x => x.CategoryId == categoryId).ToList();
+            return movies;
+        }
         [HttpPost]
         public async Task<IActionResult> CreateMovie([FromForm]MovieModelDto movieDto)
         {
