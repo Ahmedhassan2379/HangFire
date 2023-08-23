@@ -53,10 +53,10 @@ namespace HangFire.Controllers
             return movies.ToArray();
         }
 
-        [HttpPost("movieByCategory")]
+        [HttpGet("movieByCategory")]
         public dynamic getMoviesByCategory(int categoryId)
         {
-            var movies = _context.Movies.Select(x => x.CategoryId == categoryId).ToList();
+            var movies = _context.Movies.Include(c=>c.Category).Where(x => x.CategoryId == categoryId).ToList();
             return movies;
         }
         [HttpPost]

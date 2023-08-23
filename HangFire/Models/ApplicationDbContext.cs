@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
+
 namespace HangFire.Models
 {
     public class ApplicationDbContext : DbContext

@@ -6,6 +6,7 @@ import { Injectable } from '@angular/core';
 })
 export class CategoryService {
 
+  sharedData:any;
   constructor(private http:HttpClient) { }
   url="https://localhost:7109/api/Movies"
   GetAllCategories() {
@@ -13,7 +14,15 @@ export class CategoryService {
   }
 
   getMoviesByCategory(categoryId:number){
-    debugger
-    return this.http.post<any[]>(`${this.url}/movieByCategory`,categoryId);
+
+    return this.http.get<any[]>(`${this.url}/movieByCategory?categoryId=${categoryId}`);
+  }
+
+  setMovie(data:any){
+this.sharedData=data;
+  }
+
+  getMovieData(){
+    return {data:this.sharedData,flag:true};
   }
 }
