@@ -25,12 +25,12 @@ namespace HangFire.Controllers
             return Ok(categories);
         }
 
-        [HttpPost(Name = "AddCategory")]
-        public async Task<IActionResult> AddCategory(CategoryModelDtos categoryDto)
+        [HttpPost("AddCategory")]
+        public async Task<IActionResult> AddCategory([FromBody] CategoryModelDtos categoryObj)
         {
             Category category = new Category()
             {
-                Name = categoryDto.Name,
+                Name = categoryObj.Name,
             };
             await _context.Categories.AddAsync(category);
             _context.SaveChanges();

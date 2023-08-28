@@ -1,0 +1,81 @@
+<div class="jumbotron py-3">
+  <h1
+    class="display-4 text-center"
+    style="text-decoration: underline; font-weight: bold">
+    Movies List
+  </h1>
+</div>
+<div><button (click)="logout()" class="btn btn-danger">Sign Out</button></div>
+<!-- <div><button (click)="openModal()" class="btn btn-danger">Add Movie</button></div> -->
+<div><a href="/users">ALL Users</a></div>
+<div class="row" *ngIf="!finalResult || finalResult.length == 0">
+  
+  <div class="spinner-overlay" >
+    <div class="center">
+    <mat-spinner></mat-spinner>
+  </div>
+  </div>
+</div>
+<div class="row" *ngIf="finalResult && finalResult.length > 0">
+  <!-- <div class="col-md-6">
+      <app-payment-detail-form></app-payment-detail-form>
+  </div> -->
+  <div
+    class="col-md-4"
+    style="margin-top: 23px"
+    *ngFor="let item of finalResult"
+  >
+    <div class="card">
+      <img
+        style="width: 200px; height: 200px"
+        src="{{ url }}"
+        class="card-img-top"
+        alt="..."
+      />
+      <div class="card-body">
+        <h5 class="card-title">{{ item.tiltle }}</h5>
+        <p class="card-text">{{ item.categoryName }}</p>
+        <p class="card-text">
+          <small class="text-muted">{{ item.rate }}</small>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+<!-- Modal -->
+<div
+  class="modal fade"
+  id="myModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">...</div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          Close
+        </button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>

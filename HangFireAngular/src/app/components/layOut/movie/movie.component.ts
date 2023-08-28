@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { AuthService } from 'src/app/services/Auth.service';
 import { MovieService } from 'src/app/services/movie.service';
-import { UserDashbnoardComponent } from '../userDashbnoard/userDashbnoard.component';
+import { UserDashbnoardComponent } from '../../userDashbnoard/userDashbnoard.component';
 import { CategoryService } from 'src/app/services/category.service';
 import { ActivatedRoute, Router } from '@angular/router';
 

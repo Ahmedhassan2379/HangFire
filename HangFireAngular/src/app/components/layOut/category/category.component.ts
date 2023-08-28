@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgToastService } from 'ng-angular-popup';
 import { AuthService } from 'src/app/services/Auth.service';
@@ -10,6 +11,9 @@ import { CategoryService } from 'src/app/services/category.service';
 })
 export class CategoryComponent implements OnInit {
 
+  public createCategoryForm = new FormGroup({
+    name: new FormControl()
+  });
   finalResult: any[] = [];
   constructor(private categoryService: CategoryService,private router:Router, private auth: AuthService,private toast:NgToastService) {}
   url: string = '';
@@ -23,6 +27,24 @@ export class CategoryComponent implements OnInit {
       this.finalResult = data;
     });
   }
+
+  addCategory(){
+    debugger
+    if(this.createCategoryForm.valid){
+      console.log('this.createCategoryForm.value',this.createCategoryForm.value)
+      this.categoryService.addNewCategory(this.createCategoryForm.value).subscribe((data: any[]) => {
+        debugger;
+        console.log('categoriesssssssssss',data)
+        this.closeModal();
+        this.router.navigate(['movie']);   
+      });
+    }
+    else{
+      this.validateAllFormFields(this.createCategoryForm);
+    }
+ 
+  }
+
 final:any
   getMoviesByCategory(event:any){
     debugger
@@ -45,20 +67,30 @@ final:any
     })
   }
 
+  validateAllFormFields(formGroup: FormGroup) {
+    Object.keys(formGroup.controls).forEach((el) => {
+      const control = formGroup.get(el);
+      if (control instanceof FormControl) {
+        control.markAsDirty({ onlySelf: true });
+      } else if (control instanceof FormGroup) {
+        this.validateAllFormFields(control);
+      }
+    });
+  }
 
-  // openModal(){
-  //   const modal = document.getElementById('myModal');
-  //   if(modal){
-  //     modal.style.display = 'block'
-  //   }
-  //   }
+  openModal(){
+    const modal = document.getElementById('exampleModal');
+    if(modal){
+      modal.style.display = 'block'
+    }
+    }
   
-  //   closeModal(){
-  //     const modal =   document.getElementById('myModal');
-  //     if(modal){
-  //       modal.style.display = 'none'
-  //     }
-  //     }
+    closeModal(){
+      const modal =   document.getElementById('exampleModal');
+      if(modal){
+        modal.style.display = 'none'
+      }
+      }
 
   logout() {
     this.auth.signOut();

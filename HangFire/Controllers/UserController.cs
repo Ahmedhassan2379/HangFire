@@ -1,4 +1,5 @@
 ﻿using HangFire.Dtos.Auth;
+using HangFire.Dtos.Token;
 using HangFire.Helpers;
 using HangFire.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -8,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -38,11 +40,17 @@ namespace HangFire.Controllers
              {
                 return NotFound(new { Message = "Password is Wrong!" });
              }
+
             logeduser.Token = CreateJWT(logeduser);
-            return Ok(new 
+            var accessToken = logeduser.Token;
+            var newrefreshToken = CreateRefreshToken();
+            logeduser.RefreshToken = newrefreshToken;
+            logeduser.RefreshTokenExpireDate = DateTime.Now.AddDays(5);
+            await _context.SaveChangesAsync();
+            return Ok(new TokenDto
             {
-                Token = logeduser.Token,
-                Message ="Login Success"
+                AccessToken = accessToken,
+                RefreshToken = newrefreshToken
             });
         }
 
@@ -131,12 +139,50 @@ namespace HangFire.Controllers
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject=identity,
-                Expires= DateTime.Now.AddDays(1),
+                Expires= DateTime.Now.AddSeconds(10),
                 SigningCredentials=credntial,
             };
             var tokenHandler = jwt.CreateToken(tokenDescriptor);
              var r = jwt.WriteToken(tokenHandler);
             return r;
+        }
+
+        private string CreateRefreshToken()
+        {
+            var TokenBytes = RandomNumberGenerator.GetBytes(64);
+            var refreshToken = Convert.ToBase64String(TokenBytes);
+            var tokenInUser = _context.Users.Any(x=>x.RefreshToken== refreshToken);
+            if (tokenInUser)
+            {
+                return CreateRefreshToken();
+            }
+            else
+            {
+                return refreshToken;
+            }
+        }
+
+        private ClaimsPrincipal GetPrincipalFromToken(string token)
+        {
+            var key = Encoding.ASCII.GetBytes("very-very-very-secret.....");
+
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateAudience = false,
+                ValidateIssuer = false,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(key),
+                ValidateLifetime = false,
+            };
+            var tokenHandler = new JwtSecurityTokenHandler();
+            SecurityToken securityToken;
+            var princepal = tokenHandler.ValidateToken(token,tokenValidationParameters,out securityToken);
+            var jwtSecurityToken = securityToken as JwtSecurityToken;
+            if (jwtSecurityToken == null ||!jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256,StringComparison.InvariantCultureIgnoreCase)) 
+            {
+                throw new SecurityTokenException("This Is Invalid Token");
+            }
+            return princepal;
         }
 
         [Authorize]
@@ -145,6 +191,29 @@ namespace HangFire.Controllers
         {
             var users = _context.Users.ToList();
             return users;
+        }
+
+        [HttpPost("refresh")]
+        public async Task<IActionResult> Refresh(TokenDto tokenDto)
+        {
+            if (tokenDto == null)
+            {
+                return BadRequest("this user is invalid");
+            }
+            var accessToken = tokenDto.AccessToken;
+            var refreshToken = tokenDto.RefreshToken;
+            var principal = GetPrincipalFromToken(accessToken);
+            var userName = principal.Identity.Name;
+            var user = await _context.Users.FirstOrDefaultAsync(x=>x.UserName == userName);
+            if (user == null ||user.RefreshToken != refreshToken || user.RefreshTokenExpireDate <= DateTime.Now)
+            {
+                return BadRequest("Invalid Request");
+            }
+            var newAccessToken = CreateJWT(user);
+            var newRefreshToken = CreateRefreshToken();
+            user.RefreshToken = newRefreshToken;
+            await _context.SaveChangesAsync();
+            return Ok(new TokenDto { AccessToken = newAccessToken, RefreshToken = newRefreshToken});
         }
     }
 }

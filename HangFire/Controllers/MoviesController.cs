@@ -86,6 +86,40 @@ namespace HangFire.Controllers
             return Ok(movie);
         }
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateMovie(int id, [FromBody] MovieModelDto movieDto)
+        {
+            var movie = await _context.Movies.SingleOrDefaultAsync(x => x.Id == id);
+            if (movie == null)
+            {
+                Console.WriteLine("This Movie Not Found");
+            }
+        
+            movie.Tiltle = movieDto.Tiltle;
+            movie.Poster = movieDto.Poster;
+            movie.Rate = movieDto.Rate;
+            movie.Year = movieDto.Year;
+            movie.StoreLine = movieDto.StoreLine;
+            movie.CategoryId = movieDto.CategoryId;
+            
+                
+            _context.SaveChanges();
+            return Ok(movie);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteMovie(int id)
+        {
+            var movie = await _context.Movies.SingleOrDefaultAsync(x => x.Id == id);
+            if (movie == null)
+            {
+                Console.WriteLine("This Movie Not Found");
+            }
+
+            _context.Movies.Remove(movie);
+            _context.SaveChanges();
+            return Ok();
+        }
 
         [HttpGet("Export")]
         public FileContentResult ExportMovie()

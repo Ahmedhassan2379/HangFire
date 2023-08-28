@@ -1,10 +1,11 @@
+<div>
 <div class="jumbotron py-3">
   <h1 class="display-4 text-center"style="text-decoration: underline;font-weight: bold;">Categories List</h1>
 </div>
 <div><button (click)="logout()" class="btn btn-danger">Sign Out</button></div>
-<!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+<button type="button" class="btn btn-primary" (click)="openModal()">
   Launch demo modal
-</button> -->
+</button>
 <div><a href="/users">ALL Users</a></div>
 <div class="row" >
   <!-- <div class="col-md-6">
@@ -19,11 +20,11 @@
     </div>
   </div>
 </div>
+</div>
 
 
 
-
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -33,11 +34,13 @@
         </button>
       </div>
       <div class="modal-body">
-        ...
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <form [formGroup]="createCategoryForm" (ngSubmit)="addCategory()">
+          <div class="form-group">
+            <label for="exampleInputEmail1">Category Name</label>
+            <input formControlName="name" type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Category Name">
+          </div>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
       </div>
     </div>
   </div>

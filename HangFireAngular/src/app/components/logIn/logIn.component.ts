@@ -8,6 +8,7 @@ import {
 import { Router } from '@angular/router';
 import { NgToastModule, NgToastService } from 'ng-angular-popup';
 import { AuthService } from 'src/app/services/Auth.service';
+import { UserStoreService } from 'src/app/services/userStore.service';
 
 @Component({
   selector: 'app-logIn',
@@ -22,7 +23,7 @@ export class LogInComponent implements OnInit {
     username: new FormControl(),
     password: new FormControl(),
   });
-  constructor(private fb: FormBuilder, private auth: AuthService,private router:Router,private toast:NgToastService) {}
+  constructor(private fb: FormBuilder, private auth: AuthService,private userstore:UserStoreService,private router:Router,private toast:NgToastService) {}
 
   ngOnInit() {
     // this.loginForm = this.fb.group({
@@ -44,7 +45,11 @@ export class LogInComponent implements OnInit {
         next: (res) => {
           this.loginForm.reset();
           console.log(res);
-          this.auth.storeToken(res.token);
+          this.auth.storeToken(res.accessToken);
+          this.auth.storeRefreshToken(res.refreshToken)
+          const tokenPatLoad = this.auth.decodeToken();
+          this.userstore.setUserNameInStore(tokenPatLoad.userName);
+          this.userstore.setRoleInStore(tokenPatLoad.role);
           this.toast.success({detail:"SUCCESS",summary:res.message,duration:5000});
           this.router.navigate(['movie'])
         },
