@@ -36,7 +36,8 @@ export class CategoryComponent implements OnInit {
         debugger;
         console.log('categoriesssssssssss',data)
         this.closeModal();
-        this.router.navigate(['movie']);   
+        // this.router.navigate(['movie']);   
+        location.reload();
       });
     }
     else{
