@@ -8,7 +8,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from 'src/material.model';
 import { LogInComponent } from './components/logIn/logIn.component';
 import { SignUpComponent } from './components/signUp/signUp.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgToastModule } from 'ng-angular-popup';
 import { TokenInterceptor } from './interceptors/token.interceptor';
 import { UserDashbnoardComponent } from './components/userDashbnoard/userDashbnoard.component';
@@ -17,6 +17,9 @@ import { LoaderInterceptor } from './interceptors/loader.interceptor';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { LayOutComponent } from './components/layOut/layOut.component';
+import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import {MatIconModule} from '@angular/material/icon';
+import { PasswordModule } from 'primeng/password'
 
 
 @NgModule({
@@ -39,7 +42,11 @@ import { LayOutComponent } from './components/layOut/layOut.component';
     MaterialModule,
     ReactiveFormsModule,
     NgToastModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    FontAwesomeModule,
+    MatIconModule,
+    PasswordModule,
+    FormsModule
   ],
   providers:  [{
     

@@ -6,52 +6,54 @@ using MailKit.Net.Smtp;
 using MailKit.Security;
 using HangFire.Dtos.Mails;
 using System.Net.Mail;
+using HangFire.ForgetPasswordVerifcation.EmailModel;
 
 namespace HangFire.Mail.Services
 {
     public class SendMail : ISendMails
     {
         private readonly MailSetting _mailSetting;
-        public SendMail(IOptions<MailSetting> mailsetting)
+        private readonly IConfiguration _config;
+        public SendMail(IOptions<MailSetting> mailsetting,IConfiguration config)
         {
             _mailSetting = mailsetting.Value;
+            _config = config;
         }
-        //public async Task SendMailAsync(MailRequestDto mailDto)
-        //{
 
+        public void sendEmail(EmailModel emailModel)
+        {
+            var email = new MailMessage();
+            var from =(MailAddress?)MailboxAddress.Parse(_mailSetting.Email);
+            email.To.Add((MailAddress)new MailboxAddress(emailModel.To, emailModel.To));
+            email.Subject = emailModel.Subject;
+            email.Body = new TextPart(MimeKit.Text.TextFormat.Html)
+            {
+                Text = String.Format(emailModel.Content)
+            }.ToString();
+            using(var client = new System.Net.Mail.SmtpClient())
+            {
+                try
+                {
+                    //client.Connect(_config["MailSettings.Host"], 587,true);
+                    //client.Authenticate(_config["MailSettings.Email"], _config["MailSettings.Password"]);
+                    //client.Send(email);
+                    client.Host = _mailSetting.Host;
+                    client.Port = _mailSetting.Port;
+                    client.Credentials = new System.Net.NetworkCredential(_mailSetting.Email, _mailSetting.PassWord);
+                    client.EnableSsl = true;
+                    client.Send(email);
+                }
+                catch (Exception)
+                {
 
-        //    var email = new MimeMessage()
-        //    {
-        //        Sender = MailboxAddress.Parse(_mailSetting.Email),
-        //        Subject = mailDto.Subject,
-        //    };
-        //    email.To.Add(MailboxAddress.Parse(mailDto.ToEmail));
-        //    var builder = new BodyBuilder();
-        //    if (mailDto.Attachments != null)
-        //    {
-        //        byte[] filebytes;
-        //        foreach (var file in mailDto.Attachments)
-        //        {
-        //            if (file.Length > 0)
-        //            {
-        //                using var mss = new MemoryStream();
-        //                file.CopyTo(mss);
-        //                filebytes=mss.ToArray();
-        //                builder.Attachments.Add(file.FileName, filebytes, ContentType.Parse(file.ContentType));
-        //            }
-        //        }
-        //    }
-        //    builder.HtmlBody = mailDto.Body;
-        //    email.Body = builder.ToMessageBody();
-        //    email.From.Add(new MailboxAddress(_mailSetting.DisplayName,_mailSetting.Email));
-        //    using var smtp = new SmtpClient();
-        //    smtp.Timeout = 5000;
-        //    smtp.Connect(_mailSetting.Host, _mailSetting.Port,SecureSocketOptions.StartTls);
-        //    smtp.Authenticate(_mailSetting.Email, _mailSetting.PassWord);
-        //    await smtp.SendAsync(email);
-        //    smtp.Disconnect(true);
-
-        //}
+                    throw;
+                }
+                finally
+                {
+                    client.Dispose();
+                }
+            }
+        }
 
         public async Task SendEmailWithAttachment(string recipient, string subject, string body, byte[] attachmentBytes, string attachmentFileName)
         {

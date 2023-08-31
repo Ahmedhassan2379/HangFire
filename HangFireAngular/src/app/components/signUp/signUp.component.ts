@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgToastService } from 'ng-angular-popup';
 import { AuthService } from 'src/app/services/Auth.service';
@@ -12,13 +12,13 @@ import { AuthService } from 'src/app/services/Auth.service';
 export class SignUpComponent implements OnInit {
   type: string = 'password';
   isText: boolean = false;
-  eyeIcon: string = 'fa-eye-slash';
+  Icon: string = 'fa-eye-slash';
   public signupForm = new FormGroup({
-    firstname: new FormControl(),
-    lastname: new FormControl(),
-    username: new FormControl(),
-    email: new FormControl(),
-    password: new FormControl(),
+    firstname:new FormControl( '',Validators.required),
+    lastname: new FormControl('',Validators.required),
+    username: new FormControl('',Validators.required),
+    email: new FormControl('',Validators.required),
+    password: new FormControl('',Validators.required),
   });
   constructor(private auth: AuthService,private router:Router,private toast:NgToastService) {}
 
@@ -26,7 +26,7 @@ export class SignUpComponent implements OnInit {
 
   showHiddenPassword() {
     this.isText = !this.isText;
-    this.isText ? (this.eyeIcon = 'fa-eye') : (this.eyeIcon = 'fa-eye-slash');
+    this.isText ? (this.Icon = 'fa-eye') : (this.Icon = 'fa-eye-slash');
     this.isText ? (this.type = 'text') : (this.type = 'password');
   }
 

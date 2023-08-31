@@ -2,6 +2,7 @@ using Hangfire;
 using Hangfire.SqlServer;
 using HangFire.ExportFile.Interface;
 using HangFire.ExportFile.Service;
+using HangFire.ForgetPasswordVerifcation.UtilityService;
 using HangFire.ListToDataTable;
 using HangFire.Mail.Interfaces;
 using HangFire.Mail.Services;
@@ -21,6 +22,7 @@ options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectio
 );
 builder.Services.Configure<MailSetting>(builder.Configuration.GetSection("MailSettings"));
 builder.Services.AddTransient<ISendMails, SendMail>();
+builder.Services.AddTransient<IEmailService, EmailService>();
 builder.Services.AddHangfire(configuration => configuration
        .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
        .UseSimpleAssemblyNameTypeSerializer()

@@ -1,13 +1,19 @@
 ﻿using HangFire.Dtos.Auth;
+using HangFire.Dtos.Mails;
 using HangFire.Dtos.Token;
+using HangFire.ForgetPasswordVerifcation.EmailModel;
 using HangFire.Helpers;
+using HangFire.Mail.Interfaces;
 using HangFire.Models;
+using HangFire.Settings;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using MimeKit;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net.Mail;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -20,9 +26,16 @@ namespace HangFire.Controllers
     public class UserController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-        public UserController(ApplicationDbContext context)
+        //private readonly IConfiguration _config;
+        private readonly ISendMails _sendmail;
+        private readonly MailSetting _mailSetting;
+
+        public UserController(ApplicationDbContext context,ISendMails sendMails,MailSetting mailSetting)
         {
             _context = context;
+            //_config = config;
+            _sendmail = sendMails;
+            _mailSetting = mailSetting;
         }
         [HttpPost("authenticate")]
         public async Task<IActionResult> Authenticate([FromBody] LogedUser userobj)
@@ -215,5 +228,76 @@ namespace HangFire.Controllers
             await _context.SaveChangesAsync();
             return Ok(new TokenDto { AccessToken = newAccessToken, RefreshToken = newRefreshToken});
         }
-    }
+        [HttpPost("send-reset-email/{email}")]
+        public async Task<IActionResult> SendEmail(string email)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
+            if (user is null)
+            {
+                return NotFound(new
+                {
+                    StatusCode = 404,
+                    Message ="Email Not Found"
+                });
+
+            }
+            else
+            {
+                var tokenBytes = RandomNumberGenerator.GetBytes(64);
+                var emailToken = Convert.ToBase64String(tokenBytes);
+                user.ResetPasswordToken = emailToken;
+                user.ResetPasswordTokenExpire = DateTime.Now.AddMinutes(15);
+                var from = _mailSetting.Email;
+                var emailModel = new EmailModel(email, "Reset Password !", EmailBody.EmailStringBody(email, emailToken));
+                _sendmail.sendEmail(emailModel);
+                _context.Entry(user).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+                return Ok(new
+                {
+                    StatusCode = 200,
+                    Message = "Email Sent"
+                });
+            }
+        }
+
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword(ResetPasswordDto resetPassword)
+        {
+            var newToken = resetPassword.EmailToken.Replace(" ","+");
+            var user = await _context.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Email == resetPassword.Email);
+            if (user is null)
+            {
+                return NotFound(new
+                {
+                    StatusCode = 404,
+                    Message = "Email Not Found"
+                });
+
+            }
+            else
+            {
+                var tokenCode = user.ResetPasswordToken;
+                var emailTokenExpire = user.ResetPasswordTokenExpire;
+                if(tokenCode != resetPassword.EmailToken || emailTokenExpire <DateTime.Now)
+                {
+                    return BadRequest(new
+                    {
+                        StatusCode = 400, 
+                        Message = "Invalid Reset Link"
+                    });
+                }
+                else
+                {
+                    user.Password = HasingPasword.HashPassword(resetPassword.NewPassword);
+                    _context.Entry(user).State = EntityState.Modified;
+                    await _context.SaveChangesAsync();
+                    return Ok(new
+                    {
+                        StatusCode = 200,
+                        Message = "Password Reset Successfully"
+                    });
+                }
+            }
+        }
+    } 
 }
