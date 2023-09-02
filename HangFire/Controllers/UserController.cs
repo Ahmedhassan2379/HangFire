@@ -26,16 +26,14 @@ namespace HangFire.Controllers
     public class UserController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-        //private readonly IConfiguration _config;
+        private readonly IConfiguration _config;
         private readonly ISendMails _sendmail;
-        private readonly MailSetting _mailSetting;
 
-        public UserController(ApplicationDbContext context,ISendMails sendMails,MailSetting mailSetting)
+        public UserController(ApplicationDbContext context,IConfiguration config,ISendMails sendMails)
         {
             _context = context;
-            //_config = config;
+            _config = config;
             _sendmail = sendMails;
-            _mailSetting = mailSetting;
         }
         [HttpPost("authenticate")]
         public async Task<IActionResult> Authenticate([FromBody] LogedUser userobj)
@@ -228,6 +226,7 @@ namespace HangFire.Controllers
             await _context.SaveChangesAsync();
             return Ok(new TokenDto { AccessToken = newAccessToken, RefreshToken = newRefreshToken});
         }
+
         [HttpPost("send-reset-email/{email}")]
         public async Task<IActionResult> SendEmail(string email)
         {
@@ -247,9 +246,9 @@ namespace HangFire.Controllers
                 var emailToken = Convert.ToBase64String(tokenBytes);
                 user.ResetPasswordToken = emailToken;
                 user.ResetPasswordTokenExpire = DateTime.Now.AddMinutes(15);
-                var from = _mailSetting.Email;
-                var emailModel = new EmailModel(email, "Reset Password !", EmailBody.EmailStringBody(email, emailToken));
-                _sendmail.sendEmail(emailModel);
+                var from = _config["MailSettings:Email"];
+                //var emailModel = new EmailModel(email, "Reset Password !", EmailBody.EmailStringBody(email, emailToken));
+                _sendmail.SendEmailWithAttachment(email, "Reset Password !", EmailBody.EmailStringBody(email, emailToken),null,null);
                 _context.Entry(user).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
                 return Ok(new

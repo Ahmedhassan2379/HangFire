@@ -7,6 +7,7 @@ import { AuthGuard } from './Guards/auth.guard';
 import { UserDashbnoardComponent } from './components/userDashbnoard/userDashbnoard.component';
 import { CategoryComponent } from './components/layOut/category/category.component';
 import { LayOutComponent } from './components/layOut/layOut.component';
+import { ResetComponent } from './components/reset/reset.component';
 
 const routes: Routes = [
   {path:"",redirectTo:'login', pathMatch:'full'},
@@ -15,7 +16,8 @@ const routes: Routes = [
   {path:"layout",component:LayOutComponent},
   {path:"users",component:UserDashbnoardComponent,canActivate:[AuthGuard]},
   {path:"movie",component:MovieComponent,canActivate:[AuthGuard]},
-  {path:"category",component:CategoryComponent,canActivate:[AuthGuard]}
+  {path:"category",component:CategoryComponent,canActivate:[AuthGuard]},
+  {path:"reset",component:ResetComponent}
 ];
 
 @NgModule({

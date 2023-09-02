@@ -16,4 +16,9 @@ getMoviesByCategory(){
   return this.http.get<any[]>(this.url);
 }
 
+addNewMovie(movieObj: any){
+  debugger
+  return this.http.post<any>(`${this.url}/CreateMovie?movieObj=`, movieObj)
+}
+
 }

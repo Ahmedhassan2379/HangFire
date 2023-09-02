@@ -13,7 +13,7 @@ namespace HangFire.Models
         public double Rate { get; set; }
         [MaxLength(2500)]
         public string? StoreLine { get; set; }    
-        public byte[] Poster { get; set; }    
+        public byte[]? Poster { get; set; }    
         public int CategoryId { get; set; }    
         public Category Category { get; set; }
     }

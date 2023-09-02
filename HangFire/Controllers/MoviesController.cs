@@ -43,11 +43,10 @@ namespace HangFire.Controllers
             {
                 CategoryId = m.CategoryId,
                 CategoryName=m.Category.Name,
-               Id = m.Id,
                Poster=m.Poster,
                Rate=m.Rate,
                StoreLine=m.StoreLine,
-               Tiltle=m.Tiltle,
+               Title=m.Tiltle,
                Year = m.Year
             }).ToList();
             return movies.ToArray();
@@ -59,29 +58,30 @@ namespace HangFire.Controllers
             var movies = _context.Movies.Include(c=>c.Category).Where(x => x.CategoryId == categoryId).ToList();
             return movies;
         }
-        [HttpPost]
-        public async Task<IActionResult> CreateMovie([FromForm]MovieModelDto movieDto)
+
+        [HttpPost("CreateMovie")]
+        public async Task<IActionResult> CreateMovie([FromBody] MovieModelDto movieObj)
         {
           
             //var dataStream = new MemoryStream();
             //await movieDto.Poster.CopyToAsync();
             Movie movie = new Movie()
             {
-                CategoryId = movieDto.CategoryId,
-                Tiltle=movieDto.Tiltle,
-                Poster=movieDto.Poster,
-                Rate = movieDto.Rate,
-                Year = movieDto.Year,
-                StoreLine=movieDto.StoreLine
+                CategoryId = movieObj.CategoryId,
+                Tiltle= movieObj.Title,
+                Poster=movieObj.Poster,
+                Rate = movieObj.Rate,
+                Year = movieObj.Year,
+                StoreLine= movieObj.StoreLine
             };
             await _context.AddAsync(movie);
             _context.SaveChanges();
-            MailRequestDto dto = new MailRequestDto()
-            {
-                Body="ssss",
-                Subject="bbbb",
-                ToEmail="ahmedhassan2379@gmail.com"
-            };
+            //MailRequestDto dto = new MailRequestDto()
+            //{
+            //    Body="ssss",
+            //    Subject="bbbb",
+            //    ToEmail="ahmedhassan2379@gmail.com"
+            //};
             //BackgroundJob.Enqueue(() => _setting.SendMailAsync(dto));
             return Ok(movie);
         }
@@ -95,7 +95,7 @@ namespace HangFire.Controllers
                 Console.WriteLine("This Movie Not Found");
             }
         
-            movie.Tiltle = movieDto.Tiltle;
+            movie.Tiltle = movieDto.Title;
             movie.Poster = movieDto.Poster;
             movie.Rate = movieDto.Rate;
             movie.Year = movieDto.Year;
@@ -127,11 +127,10 @@ namespace HangFire.Controllers
            var result = _context.Movies.Include(x => x.Category).Select(m=>new MovieModelDto {
                 CategoryId = m.CategoryId,
                 CategoryName = m.Category.Name,
-                Id = m.Id,
                 Poster = m.Poster,
                 Rate = m.Rate,
                 StoreLine = m.StoreLine,
-                Tiltle = m.Tiltle,
+                Title = m.Tiltle,
                 Year = m.Year
             }).Where(x => x.Year == 2023).ToList();
             DataTable dt = _dataTable.ToDataTable(result);

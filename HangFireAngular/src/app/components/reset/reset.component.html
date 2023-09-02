@@ -1,0 +1,28 @@
+<section class="gradient-custom" style="height: calc(100vh - 52px);">
+  <div class="login-page">
+   <div class="form">
+     <form [formGroup]="resetPasswordForm" (ngSubmit)="reset()">
+       <h2 class="fw-bold mb-2 text-uppercase" style="color: rgb(19, 45, 88);padding-bottom: 20px;text-decoration: underline;">Reset Password</h2>
+ 
+ 
+       <div [class.error]="resetPasswordForm.controls['password'].dirty && resetPasswordForm.hasError('required','password')">
+        <i (click)="showHiddenPassword()" class="fa {{Icon}}" style=" float: right;margin-right: 15px;margin-top: 20px;position: absolute;right: 37px;z-index: 2;"></i> 
+        <input [type]="type" formControlName="password" placeholder="Password"/>
+       </div>
+       <small *ngIf="resetPasswordForm.controls['password'].dirty && resetPasswordForm.hasError('required','password')" class="text-danger">The Password Is Required</small>
+       
+       
+       <div [class.error]="resetPasswordForm.controls['confirmPassword'].dirty && resetPasswordForm.hasError('required','confirmPassword')">
+         <i (click)="showHiddenPassword()" class="fa {{Icon}}" style=" float: right;margin-right: 15px;margin-top: 20px;position: absolute;right: 37px;z-index: 2;"></i> 
+         <!-- <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="remove-red-eye"></mat-icon> -->
+         <input [type]="type" formControlName="confirmPassword" placeholder="Confirm Password"/>  
+       </div>
+       <div *ngIf="resetPasswordForm.controls['confirmPassword'].dirty && resetPasswordForm.hasError('required','confirmPassword')" class="text-danger">The Password Is Required</div>
+       <div *ngIf="resetPasswordForm.hasError('confirmPasswordValidator','confirmPassword')" class="text-danger">The Password Not Match</div>
+
+       
+       <button [disabled]="resetPasswordForm.invalid" type="submit">Reset</button>
+     </form>
+   </div>
+ </div>
+ </section>

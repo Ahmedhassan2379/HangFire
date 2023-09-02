@@ -20,6 +20,7 @@ import { LayOutComponent } from './components/layOut/layOut.component';
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {MatIconModule} from '@angular/material/icon';
 import { PasswordModule } from 'primeng/password'
+import { ResetComponent } from './components/reset/reset.component';
 
 
 @NgModule({
@@ -31,7 +32,8 @@ import { PasswordModule } from 'primeng/password'
     SignUpComponent,
     UserDashbnoardComponent,
     SpinnerComponent,
-    LayOutComponent
+    LayOutComponent,
+    ResetComponent
 
   ],
   imports: [
