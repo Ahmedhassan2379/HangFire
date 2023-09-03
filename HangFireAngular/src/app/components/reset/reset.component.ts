@@ -36,7 +36,7 @@ export class ResetComponent implements OnInit {
     this.ac.queryParams.subscribe(val=>{
       this.emailToReset = val['email'];
       let uriToken = val['code'];
-      this.emailToken = uriToken.Replace(/ /g,'+');
+      this.emailToken = uriToken.replace(/ /g,'+');
     });
   }
 
@@ -65,6 +65,7 @@ export class ResetComponent implements OnInit {
       this.resetPasswordObj.newPassword = this.resetPasswordForm.value.password;
       this.resetPasswordObj.confirmPassword = this.resetPasswordForm.value.confirmPassword;
       this.resetPasswordObj.emailToken = this.emailToken;
+      console.log('this.resetPasswordObj',this.resetPasswordObj);
       this.res.resetPassword(this.resetPasswordObj).subscribe({
         next:(x)=>{
           this.toast.success({detail:'SUCCESS',summary:'Password Reset Successfully',duration:5000});
